@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canva + AI 101 — BUGpairoj Group</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=Prompt:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Sarabun',sans-serif;box-sizing:border-box;}
+.prompt{font-family:'Prompt',sans-serif;}
+body{background:#FDF0E8;margin:0;padding:0;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#FDF0E8;}
+::-webkit-scrollbar-thumb{background:#FDBA74;border-radius:3px;}
+.sidebar{width:256px;background:white;height:100vh;position:fixed;top:0;left:0;overflow-y:auto;box-shadow:2px 0 12px rgba(0,0,0,0.06);z-index:100;display:flex;flex-direction:column;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;color:#374151;cursor:pointer;font-size:0.875rem;transition:all .2s;margin:2px 0;}
+.nav-item.active{background:linear-gradient(135deg,#FB923C,#F97316);color:white;font-weight:600;}
+.nav-item:hover:not(.active){background:#FFF7ED;color:#F97316;}
+.main{margin-left:256px;min-height:100vh;}
+.topbar{height:54px;background:white;padding:0 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #F3F4F6;position:sticky;top:0;z-index:90;}
+.card{background:white;border-radius:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);}
+.badge-hot{background:#FEF3C7;color:#D97706;border-radius:999px;padding:2px 10px;font-size:0.7rem;font-weight:700;}
+.badge-done{background:#D1FAE5;color:#059669;border-radius:999px;padding:2px 10px;font-size:0.7rem;font-weight:700;}
+.btn-orange{background:linear-gradient(135deg,#FB923C,#F97316);color:white;border:none;border-radius:12px;padding:12px 24px;font-size:0.95rem;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(249,115,22,.35);transition:all .2s;}
+.btn-orange:hover{box-shadow:0 5px 16px rgba(249,115,22,.5);transform:translateY(-1px);}
+.btn-outline{background:white;color:#F97316;border:2px solid #F97316;border-radius:12px;padding:10px 22px;font-size:0.9rem;font-weight:700;font-family:'Sarabun',sans-serif;cursor:pointer;transition:all .2s;}
+.btn-outline:hover{background:#FFF7ED;}
+.tab-btn{padding:8px 18px;border-radius:10px;border:none;font-family:'Sarabun',sans-serif;font-size:0.875rem;font-weight:600;cursor:pointer;transition:all .2s;background:none;color:#6B7280;}
+.tab-btn.active{background:linear-gradient(135deg,#FB923C,#F97316);color:white;}
+.module-card{background:white;border-radius:16px;border:1.5px solid #F3F4F6;cursor:pointer;transition:all .25s;overflow:hidden;position:relative;}
+.module-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(249,115,22,.15);border-color:#FDBA74;}
+.module-card.done{border-color:#6EE7B7;}
+.progress-bar-bg{background:#F3F4F6;border-radius:999px;height:7px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#FDBA74,#F97316);transition:width .5s ease;}
+.hero-bg{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 40%,#172554 70%,#0f172a 100%);}
+.shimmer{background:linear-gradient(90deg,#FB923C,#FCD34D,#FB923C);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+.pulse-dot{animation:pulsedot 2s infinite;}
+@keyframes pulsedot{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.5)}50%{box-shadow:0 0 0 6px rgba(249,115,22,0)}}
+.lesson-row{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #F9FAFB;transition:background .15s;cursor:pointer;}
+.lesson-row:hover{background:#FFF7ED;}
+.lesson-row:last-child{border-bottom:none;}
+.tool-card{background:white;border-radius:14px;border:1.5px solid #F3F4F6;padding:18px;display:flex;align-items:start;gap:14px;transition:all .2s;}
+.tool-card:hover{border-color:#FDBA74;box-shadow:0 4px 12px rgba(249,115,22,.1);}
+.outcome-item{background:white;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;border-left:3px solid #F97316;}
+.fade-in{animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:22px}.learning-box{background:white;border:1px solid #FFEDD5;border-radius:16px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.04)}.learning-box h3{font-weight:800;color:#1F2937;margin:0 0 8px}.learning-box p,.learning-box li{font-size:.86rem;line-height:1.75;color:#4B5563}.deep-card{background:white;border:1px solid #F3F4F6;border-radius:16px;overflow:hidden;margin-bottom:14px}.deep-head{padding:14px 18px;background:#FFF7ED;border-bottom:1px solid #FFEDD5;font-weight:800;color:#1F2937}.deep-body{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}.label-pill{display:inline-block;border-radius:999px;padding:3px 9px;font-size:.7rem;font-weight:800;margin-bottom:8px}.prompt-box{background:#0F172A;color:#FED7AA;border-radius:12px;padding:14px;font-family:monospace;font-size:.78rem;line-height:1.7;white-space:pre-wrap;margin-bottom:12px}.quiz-choice{display:block;background:#FFF7ED;border:1px solid #FED7AA;border-radius:12px;padding:10px 12px;margin:8px 0;font-size:.86rem;cursor:pointer}.quiz-feedback{border-radius:12px;padding:10px 12px;margin-top:8px;font-size:.84rem;line-height:1.6}.copy-mini{background:#FFF7ED;color:#C2410C;border:1px solid #FDBA74;border-radius:9px;padding:6px 10px;font-weight:800;font-size:.75rem;cursor:pointer}@media(max-width:900px){.learning-grid{grid-template-columns:1fr}.deep-body{grid-template-columns:1fr}}@media print{.copy-mini,#module-detail button{display:none!important}.learning-box,.deep-card{box-shadow:none}}
+
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div style="padding:18px 16px;border-bottom:1px solid #F3F4F6;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="background:linear-gradient(135deg,#FB923C,#F97316);color:white;border-radius:10px;padding:8px 10px;font-weight:800;font-size:0.9rem;" class="prompt">CAI</div>
+      <div>
+        <div style="font-size:0.6rem;color:#9CA3AF;line-height:1.3;">BUGpairoj Group</div>
+        <div style="font-size:0.95rem;font-weight:700;color:#1F2937;" class="prompt">Canva + AI 101</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div style="margin:14px 12px;background:#FFF7ED;border:1px solid #FDBA74;border-radius:12px;padding:14px;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+      <span style="font-size:0.72rem;font-weight:700;color:#92400E;">ความคืบหน้า</span>
+      <span id="progress-text" style="font-size:0.72rem;color:#D97706;font-weight:700;">0 / 8 Module</span>
+    </div>
+    <div class="progress-bar-bg"><div id="sidebar-progress" class="progress-bar-fill" style="width:0%"></div></div>
+    <div style="margin-top:8px;font-size:0.68rem;color:#B45309;">🔥 เริ่มเรียนและปลดล็อกทุก Module!</div>
+  </div>
+
+  <!-- Nav -->
+  <nav style="padding:0 10px;flex:1;">
+    <div style="font-size:0.62rem;font-weight:700;color:#9CA3AF;padding:8px 6px 4px;text-transform:uppercase;letter-spacing:.05em;">เนื้อหาคอร์ส</div>
+    <div class="nav-item active" id="nav-home" onclick="goHome()">🏠 ภาพรวมคอร์ส</div>
+    <div id="nav-m0" class="nav-item" onclick="openModule(0)"><span class="mod-num" style="background:#EDE9FE;color:#7C3AED;">0</span> ปูพื้นฐาน + Mindset</div>
+    <div id="nav-m1" class="nav-item" onclick="openModule(1)"><span class="mod-num" style="background:#DBEAFE;color:#1D4ED8;">1</span> Canva Magic Studio</div>
+    <div id="nav-m2" class="nav-item" onclick="openModule(2)"><span class="mod-num" style="background:#D1FAE5;color:#065F46;">2</span> GPT สำหรับครีเอเตอร์</div>
+    <div id="nav-m3" class="nav-item" onclick="openModule(3)"><span class="mod-num" style="background:#FEF3C7;color:#D97706;">3</span> AI Image Prompting</div>
+    <div id="nav-m4" class="nav-item" onclick="openModule(4)"><span class="mod-num" style="background:#FCE7F3;color:#BE185D;">4</span> Branding Kit ด้วย AI</div>
+    <div id="nav-m5" class="nav-item" onclick="openModule(5)"><span class="mod-num" style="background:#CCFBF1;color:#0F766E;">5</span> Video &amp; Animation</div>
+    <div id="nav-m6" class="nav-item" onclick="openModule(6)"><span class="mod-num" style="background:#FEE2E2;color:#DC2626;">6</span> Viral Thumbnail</div>
+    <div id="nav-m7" class="nav-item" onclick="openModule(7)"><span class="mod-num" style="background:#F3F4F6;color:#374151;">7</span> Slide Design Psychology</div>
+
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid #F3F4F6;">
+      <div style="font-size:0.62rem;font-weight:700;color:#9CA3AF;padding:0 6px 4px;text-transform:uppercase;">เครื่องมือ</div>
+      <div class="nav-item">🛠️ AI Tools คลัง</div>
+      <div class="nav-item">📚 Resource Hub</div>
+      <div class="nav-item">💬 Q&amp;A ชุมชน</div>
+    </div>
+  </nav>
+
+  <div style="padding:12px 14px;border-top:1px solid #F3F4F6;text-align:center;">
+    <div style="font-size:0.65rem;color:#9CA3AF;">© BUGpairoj Group</div>
+    <div style="font-size:0.7rem;color:#F97316;font-weight:600;">Canva + AI 101 v1.0</div>
+  </div>
+</aside>
+
+<style>
+.mod-num{border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;flex-shrink:0;}
+</style>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:0.82rem;color:#9CA3AF;">คอร์สออนไลน์</span>
+      <span style="color:#D1D5DB;">›</span>
+      <span id="breadcrumb" style="font-size:0.82rem;font-weight:600;color:#F97316;">ภาพรวมคอร์ส</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button style="background:none;border:none;font-size:1.1rem;cursor:pointer;padding:6px;border-radius:8px;" title="แจ้งเตือน">🔔</button>
+      <div style="width:32px;height:32px;background:linear-gradient(135deg,#FB923C,#F97316);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;cursor:pointer;">P</div>
+      <span style="font-size:0.85rem;font-weight:600;color:#374151;">ไพโรจน์</span>
+    </div>
+  </header>
+
+  <!-- ===== HOME SECTION ===== -->
+  <section id="sec-home" class="fade-in">
+
+    <!-- Hero -->
+    <div class="hero-bg" style="padding:56px 48px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(249,115,22,.08);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-50px;right:250px;width:140px;height:140px;border-radius:50%;background:rgba(139,92,246,.06);pointer-events:none;"></div>
+      <div style="position:relative;z-index:2;max-width:720px;">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.35);border-radius:999px;padding:5px 16px;margin-bottom:18px;">
+          <span class="pulse-dot" style="width:7px;height:7px;background:#F97316;border-radius:50%;display:inline-block;"></span>
+          <span style="font-size:0.78rem;color:#FDBA74;font-weight:600;">BUGpairoj Group — คอร์สออนไลน์</span>
+        </div>
+        <h1 class="prompt" style="font-size:2.6rem;font-weight:800;color:white;line-height:1.2;margin:0 0 10px;">
+          Canva + AI 101
+          <span class="shimmer prompt" style="display:block;font-size:1.65rem;">Design 10× Faster with AI</span>
+        </h1>
+        <p style="color:#94A3B8;font-size:0.97rem;line-height:1.75;max-width:580px;margin:0 0 24px;">
+          Workflow จริงที่ครีเอเตอร์มืออาชีพใช้ — จับคู่ Canva Magic Studio + GPT + Midjourney เพื่อออกแบบงานครบวงจร ตั้งแต่คิดคอนเทนต์ → ทำภาพ → วิดีโอ → สไลด์ → แบรนด์
+        </p>
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <button class="btn-orange" onclick="openModule(0)" style="display:flex;align-items:center;gap:8px;">🚀 เริ่มเรียนเลย</button>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#94A3B8;">
+            <span style="color:#FBBF24;">★★★★★</span>
+            <span style="color:white;font-weight:600;">4.9</span>
+            <span>(1,247 คน)</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:28px;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);">
+          <div><div class="prompt" style="font-size:1.5rem;font-weight:800;color:#FB923C;">8</div><div style="font-size:0.72rem;color:#94A3B8;">Modules</div></div>
+          <div style="width:1px;background:rgba(255,255,255,.1);"></div>
+          <div><div class="prompt" style="font-size:1.5rem;font-weight:800;color:#FCD34D;">10×</div><div style="font-size:0.72rem;color:#94A3B8;">เร็วขึ้น</div></div>
+          <div style="width:1px;background:rgba(255,255,255,.1);"></div>
+          <div><div class="prompt" style="font-size:1.5rem;font-weight:800;color:#A78BFA;">5</div><div style="font-size:0.72rem;color:#94A3B8;">AI Tools</div></div>
+          <div style="width:1px;background:rgba(255,255,255,.1);"></div>
+          <div><div class="prompt" style="font-size:1.5rem;font-weight:800;color:#34D399;">0</div><div style="font-size:0.72rem;color:#94A3B8;">พื้นฐาน</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pain points -->
+    <div style="background:white;padding:22px 48px;border-bottom:1px solid #F3F4F6;">
+      <div style="font-size:0.9rem;font-weight:700;color:#1F2937;margin-bottom:14px;">😩 คอร์สนี้แก้ปัญหาเหล่านี้ได้</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:999px;padding:7px 16px;font-size:0.82rem;color:#B91C1C;">⏰ งานออกแบบใช้เวลานานเกินไป ทำทั้งวันได้แค่ 1 งาน</div>
+        <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:999px;padding:7px 16px;font-size:0.82rem;color:#B91C1C;">🎨 ทำภาพให้เข้าธีมเดียวกันทั้งชุดไม่เป็น</div>
+        <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:999px;padding:7px 16px;font-size:0.82rem;color:#B91C1C;">📝 เขียนสคริปต์ คิดไอเดีย ทำสไลด์ให้ดูมืออาชีพไม่รู้วิธี</div>
+        <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:999px;padding:7px 16px;font-size:0.82rem;color:#B91C1C;">✨ ใช้ Canva ไม่คล่อง ไม่รู้ฟีเจอร์ Magic Studio</div>
+        <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:999px;padding:7px 16px;font-size:0.82rem;color:#B91C1C;">🤖 เห็น AI ทำงานไว แต่ใช้เองยังไม่รู้เทคนิค</div>
+      </div>
+    </div>
+
+    <!-- Tabs + Content -->
+    <div style="padding:36px 48px;">
+      <div style="display:flex;gap:8px;margin-bottom:28px;background:white;padding:5px;border-radius:14px;width:fit-content;box-shadow:0 1px 4px rgba(0,0,0,.07);">
+        <button class="tab-btn active" id="tb-modules" onclick="switchTab('modules')">📚 Modules</button>
+        <button class="tab-btn" id="tb-tools" onclick="switchTab('tools')">🛠️ AI Tools</button>
+        <button class="tab-btn" id="tb-outcomes" onclick="switchTab('outcomes')">🎯 ผลลัพธ์</button>
+      </div>
+
+      <!-- Modules tab -->
+      <div id="tab-modules">
+        <div id="module-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;"></div>
+      </div>
+
+      <!-- Tools tab -->
+      <div id="tab-tools" style="display:none;">
+        <div style="font-size:1.15rem;font-weight:700;color:#1F2937;margin-bottom:6px;">🛠️ AI Tools ที่จะได้ใช้ในคอร์ส</div>
+        <div style="color:#6B7280;font-size:0.85rem;margin-bottom:20px;">เครื่องมือ AI ครบวงจรที่ทีมมืออาชีพใช้จริง</div>
+        <div id="tools-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;"></div>
+      </div>
+
+      <!-- Outcomes tab -->
+      <div id="tab-outcomes" style="display:none;">
+        <div style="font-size:1.15rem;font-weight:700;color:#1F2937;margin-bottom:18px;">🎯 หลังจบคอร์ส คุณจะสามารถ...</div>
+        <div id="outcomes-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MODULE DETAIL SECTION ===== -->
+  <section id="sec-module" style="display:none;padding:40px 48px;" class="fade-in">
+    <div id="module-detail"></div>
+  </section>
+
+</main>
+
+<script>
+const MODULES = [
+  {id:0,emoji:'🧠',color:'#7C3AED',bg:'#EDE9FE',title:'Module 0: ปูพื้นฐาน + Mindset',subtitle:'เข้าใจ Workflow ภาพรวม และวิธีคิดแบบ Creator Pro',duration:'45 นาที',count:4,
+   lessons:['Creator Workflow 2025 คืออะไร','เลือกเครื่องมือ AI ให้ถูกงาน','Mindset ของดีไซน์เนอร์ยุคใหม่','ตั้งค่า Workspace ให้พร้อมทำงาน'],
+   outcomes:['เข้าใจระบบ Workflow ที่มืออาชีพใช้จริง','เลือกใช้เครื่องมือ AI ได้ถูกกับงานแต่ละประเภท','มีทัศนคติและวิธีคิดที่ถูกต้องในการออกแบบยุคใหม่']},
+  {id:1,emoji:'🎨',color:'#1D4ED8',bg:'#DBEAFE',title:'Module 1: Canva Magic Studio',subtitle:'เชี่ยวชาญ Magic Studio ให้เร็วขึ้น 5 เท่า',duration:'1.5 ชั่วโมง',count:6,
+   lessons:['Magic Media & Magic Write','Magic Eraser & Background Remover','Magic Expand & Magic Morph','Brand Kit Setup ขั้น Pro','Template Hacking เทคนิค','Shortcuts & Batch Design Workflow'],
+   outcomes:['ใช้ Magic Studio ได้ทุกฟีเจอร์','ตั้ง Brand Kit ให้ชุดงานสม่ำเสมอ','ผลิตงานออกแบบได้เร็วขึ้น 5 เท่า']},
+  {id:2,emoji:'🤖',color:'#065F46',bg:'#D1FAE5',title:'Module 2: GPT สำหรับครีเอเตอร์',subtitle:'ใช้ GPT ช่วยคิด สคริปต์ ไอเดีย โครงสไลด์',duration:'1 ชั่วโมง',count:5,
+   lessons:['Content Idea Generation Prompts','Script Writing สำหรับ Reels & Video','Slide Outline + Copy ด้วย GPT','Caption & Hook Formula','GPT + Canva Integration Workflow'],
+   outcomes:['เขียน Prompt GPT ให้ได้ผลลัพธ์แม่นยำ','สร้างสคริปต์วิดีโอคุณภาพสูงใน 5 นาที','ออกแบบ Slide Outline ครบเพียงพริบตา']},
+  {id:3,emoji:'🖼️',color:'#D97706',bg:'#FEF3C7',title:'Module 3: AI Image Prompting',subtitle:'เทคนิค Prompt ภาพ Premium คุมสไตล์ทั้งชุด',duration:'1.5 ชั่วโมง',count:7,
+   lessons:['Midjourney Prompt Formula เบื้องต้น','Style Consistency Technique (คุมธีม)','Nano Banana สำหรับคอนเทนต์ไทย','Reference Image & Style Transfer','Batch Image Generation Workflow','Color Palette & Mood Control','Upscale & Refinement Techniques'],
+   outcomes:['ทำภาพ AI คุณภาพ Premium ได้ทุกสไตล์','คุมสไตล์ภาพให้เหมือนกันทั้งชุด','ใช้ Nano Banana ทำภาพไทยสวยงาม']},
+  {id:4,emoji:'💼',color:'#BE185D',bg:'#FCE7F3',title:'Module 4: Branding Kit ด้วย AI',subtitle:'สร้าง Brand Identity ที่ดูมืออาชีพด้วย AI',duration:'1 ชั่วโมง',count:5,
+   lessons:['Logo Concept Generation ด้วย AI','Color Palette Generator & Theory','Typography Pairing สำหรับแบรนด์','Brand Voice & Tone ด้วย GPT','Brand Kit ใน Canva Pro Setup'],
+   outcomes:['ออกแบบ Logo Concept ด้วย AI','สร้าง Brand Identity ครบชุดใน 1 วัน','Brand Kit Canva พร้อมใช้งานจริง']},
+  {id:5,emoji:'🎬',color:'#0F766E',bg:'#CCFBF1',title:'Module 5: Video & Animation',subtitle:'ทำ Video Opener และ Intro ด้วย Runway + Magic',duration:'1.5 ชั่วโมง',count:6,
+   lessons:['Canva Magic Animate ทุก Effect','Runway Gen-2 สร้าง AI Video','Video Opener Formula ระดับ Pro','Transitions & Motion Graphic','Export Settings สำหรับ Social','Multi-Platform Video Workflow'],
+   outcomes:['สร้าง Video Opener ระดับโปรได้เอง','ใช้ Runway ML สร้าง AI Video','Export วิดีโอถูก Format ทุก Platform']},
+  {id:6,emoji:'🔥',color:'#DC2626',bg:'#FEE2E2',title:'Module 6: Viral Thumbnail',subtitle:'เคล็ดลับ Thumbnail ที่สะดุดตาและเพิ่ม CTR',duration:'1 ชั่วโมง',count:5,
+   lessons:['Thumbnail Psychology & CTR Science','Color Contrast & Visual Hierarchy','Typography สำหรับ Thumbnail','Face Emotion & Curiosity Gap Rule','A/B Testing Thumbnails ด้วย AI'],
+   outcomes:['ทำ Thumbnail ที่เพิ่ม CTR ได้จริง','เข้าใจจิตวิทยาผู้ชมในการคลิก','A/B Test ด้วย AI เพื่อ Optimize']},
+  {id:7,emoji:'📊',color:'#374151',bg:'#F3F4F6',title:'Module 7: Slide Design Psychology',subtitle:'ทำสไลด์ให้เข้าใจง่าย น่าจดจำ และดูมืออาชีพ',duration:'1.5 ชั่วโมง',count:7,
+   lessons:['One Message Per Slide Rule','Visual Hierarchy & Reading Flow','Data Visualization ที่สวยงาม','Presentation Flow & Storytelling','Slide Templates Pro ใน Canva','Delivery + Design Synchronization','Final Project: Pitch Deck สมบูรณ์'],
+   outcomes:['ออกแบบสไลด์ที่เข้าใจง่ายและน่าจดจำ','สร้าง Pitch Deck มืออาชีพได้เอง','เล่าเรื่องผ่าน Slide ได้อย่างมีพลัง']}
+];
+
+const TOOLS = [
+  {emoji:'🎨',name:'Canva',desc:'Magic Studio Suite ครบวงจร',color:'#7C3AED',bg:'#EDE9FE',tag:'หลัก'},
+  {emoji:'🤖',name:'ChatGPT',desc:'ไอเดีย + Script + Copy',color:'#059669',bg:'#D1FAE5',tag:'หลัก'},
+  {emoji:'🖼️',name:'Midjourney',desc:'AI Image Generation คุณภาพสูง',color:'#1D4ED8',bg:'#DBEAFE',tag:'หลัก'},
+  {emoji:'🍌',name:'Nano Banana',desc:'Thai AI Image Tool',color:'#D97706',bg:'#FEF3C7',tag:'หลัก'},
+  {emoji:'🎬',name:'Runway ML',desc:'AI Video Generation',color:'#DC2626',bg:'#FEE2E2',tag:'เสริม'},
+  {emoji:'✨',name:'Adobe Firefly',desc:'AI Creative Suite',color:'#BE185D',bg:'#FCE7F3',tag:'เสริม'}
+];
+
+const OUTCOMES = [
+  {emoji:'⚡',text:'ออกแบบคอนเทนต์ได้เร็วขึ้น 3–10 เท่า'},
+  {emoji:'🏆',text:'สร้างงานคุณภาพระดับโปร แม้ไม่มีพื้นฐานดีไซน์'},
+  {emoji:'🎯',text:'ทำภาพ–สไลด์–วิดีโอให้แบรนด์ดูน่าเชื่อถือและโดดเด่น'},
+  {emoji:'🎨',text:'คุมสไตล์ภาพให้เป็นเอกลักษณ์ (Brand Cohesive)'},
+  {emoji:'🤖',text:'ใช้ AI เป็นผู้ช่วยออกแบบ 24 ชั่วโมง ช่วยคิด ช่วยทำ ช่วยปรับ'},
+  {emoji:'📊',text:'สร้าง Presentation สำเร็จรูปพร้อมนำไปใช้งานจริงทันที'}
+];
+
+
+const DETAILS = [{"why": "เริ่มจากระบบคิดก่อนเปิด Canva เพื่อให้ทุกงานมีเป้าหมายชัด ไม่เสียเวลาลองผิดลองถูก และสามารถทำซ้ำเป็น Workflow ได้", "learningPath": ["แปลงโจทย์เป็น Brief", "เลือกเครื่องมือ AI ให้ตรงงาน", "สร้าง Prompt Library", "จัด Workspace และ Template", "ตรวจงานด้วย Checklist ก่อนเผยแพร่"], "keyConcepts": [{"title": "Brief คือเข็มทิศของงาน", "body": "งานออกแบบที่ดีต้องตอบได้ว่าใครคือผู้ชม เขามีปัญหาอะไร เราต้องการให้เขารู้สึกอะไร และอยากให้เขาทำอะไรต่อ"}, {"title": "AI คือผู้ช่วยผลิตทางเลือก", "body": "อย่าให้ AI ตัดสินใจแทนทั้งหมด ให้ใช้ AI สร้างตัวเลือกหลายแบบ แล้วเราเลือกและปรับตามบริบทจริง"}, {"title": "ทำงานแบบระบบ ไม่ใช่แบบอารมณ์", "body": "เมื่อมี Template, Prompt และโฟลเดอร์ชัดเจน คุณจะผลิตงานซ้ำได้เร็วขึ้นและคุมคุณภาพได้"}], "lessonDetails": [{"concept": "Workflow ยุค AI คือการเรียงงานจาก Brief → Prompt → Draft → Design → Review → Publish → Measure", "steps": ["เขียนเป้าหมายงาน 1 ประโยค", "ระบุกลุ่มเป้าหมายและ Pain Point", "ให้ AI สร้างไอเดียหลายทาง", "เลือกแนวที่ตรงเป้าหมายที่สุด", "ทำต้นแบบใน Canva และตรวจด้วย Checklist"], "practice": "เลือกงานจริง 1 ชิ้น แล้วเขียน Workflow 6 ขั้นของคุณเอง"}, {"concept": "เลือกเครื่องมือจากผลลัพธ์ที่ต้องการ เช่น GPT สำหรับข้อความ Canva สำหรับ Layout Image AI สำหรับภาพเฉพาะทาง", "steps": ["แยกงานเป็น Text, Image, Layout, Video", "เลือกเครื่องมือหลักแต่ละขั้น", "กำหนด Input ที่ต้องป้อน", "กำหนด Output ที่ต้องได้", "ทดสอบและปรับ"], "practice": "ทำตาราง งานที่ต้องทำ | เครื่องมือ | เหตุผล อย่างน้อย 5 แถว"}, {"concept": "Mindset สำคัญคือคิดแบบ Editor: AI ให้ร่างแรก เราต้องคัด ปรับ และตัดสิ่งที่ไม่จำเป็น", "steps": ["อย่ารับคำตอบแรกทันที", "ขอ 3 เวอร์ชัน", "วิจารณ์ข้อดีข้อเสีย", "ปรับให้สั้นและชัด", "เลือกเวอร์ชันที่เหมาะกับผู้ชม"], "practice": "นำ Caption เดิม 1 อัน ให้ AI ปรับ 3 โทน แล้วเลือกเวอร์ชันดีที่สุด"}, {"concept": "Workspace ที่ดีทำให้งานเร็วขึ้น เพราะไม่ต้องหาไฟล์ โลโก้ สี ฟอนต์ และ Prompt ซ้ำทุกครั้ง", "steps": ["สร้างโฟลเดอร์แยกตามโปรเจกต์", "ทำ Prompt Library", "ทำ Template หลัก", "ตั้งชื่อไฟล์แบบมีวันที่และเวอร์ชัน", "เก็บ Reference ที่ดีไว้ใช้ซ้ำ"], "practice": "จัดโฟลเดอร์ Canva ใหม่และสร้าง Prompt Library อย่างน้อย 10 Prompt"}], "prompts": ["คุณคือ Creative Strategist ช่วยแปลงไอเดีย [ใส่ไอเดีย] เป็น Creative Brief โดยระบุ กลุ่มเป้าหมาย, Pain Point, Core Message, Hook 5 แบบ, Key Visual และ CTA", "ช่วยวาง Workflow งานออกแบบสำหรับ [ระบุงาน] เป็นขั้นตอน ตั้งแต่รับโจทย์จนเผยแพร่ พร้อมเครื่องมือที่ใช้ในแต่ละขั้นและ Checklist ตรวจงาน"], "workshop": {"title": "สร้าง Creative Brief + Workflow 1 งาน", "tasks": ["เลือกบริการหรือคอนเทนต์ 1 เรื่อง", "เขียน Brief ให้ครบ 5W1H", "สร้าง Hook 5 แบบ", "วาง Workflow ตั้งแต่ Prompt ถึง Publish", "สรุป Checklist ตรวจงานก่อนส่ง"], "deliverable": "Brief 1 หน้า + Workflow 1 แผนภาพ"}, "quiz": [{"q": "สิ่งใดควรทำก่อนเริ่มลากวางใน Canva", "choices": ["เลือก Animation", "เขียน Brief และ Core Message", "Export ไฟล์", "เลือกเพลง"], "answer": 1, "why": "Brief ทำให้รู้ทิศทางและลดการออกแบบแบบสุ่ม"}, {"q": "AI เหมาะที่สุดกับบทบาทใดใน Workflow", "choices": ["ตัดสินใจแทนทั้งหมด", "สร้างทางเลือกและเร่งงาน", "แทน Brand Strategy ทุกอย่าง", "ใช้เฉพาะทำโลโก้"], "answer": 1, "why": "AI ช่วยสร้างทางเลือก แต่คนต้องคุมเป้าหมายและคุณภาพ"}]}, {"why": "Canva Magic Studio ช่วยลดเวลาการทำงานซ้ำ ๆ แต่ต้องใช้ร่วมกับหลัก Design เพื่อให้ผลลัพธ์ไม่ดูเป็น Template สำเร็จรูปเกินไป", "learningPath": ["ใช้ Magic Write ทำข้อความ", "ใช้ Magic Design ร่าง Layout", "ใช้ Magic Media สร้างภาพ", "แก้ภาพด้วย Eraser/Expand", "ทำงานหลายชิ้นด้วย Bulk Create"], "keyConcepts": [{"title": "AI ทำ Draft แต่คุณต้องทำ Direction", "body": "ผลลัพธ์จาก Magic Studio เป็นจุดเริ่มต้น ไม่ใช่งานสุดท้าย ต้องปรับ Hierarchy สี ฟอนต์ และระยะขอบ"}, {"title": "Template Hacking", "body": "เลือก Template ที่โครงดี แล้วเปลี่ยนข้อความ ภาพ สี และลำดับข้อมูลให้เข้ากับแบรนด์"}, {"title": "Batch Workflow", "body": "ถ้างานมีรูปแบบซ้ำ ให้ทำ Template หนึ่งครั้ง แล้วใช้ Bulk Create หรือ Duplicate เพื่อผลิตเป็นชุด"}], "lessonDetails": [{"concept": "Magic Write ช่วยคิดข้อความ ส่วน Magic Design ช่วยร่างรูปแบบจากโจทย์หรือภาพ", "steps": ["เขียนโจทย์ชัดเจน", "ขอ Headline หลายแบบ", "เลือก 1 แนว", "สร้าง Layout ด้วย Magic Design", "ปรับให้ข้อความสำคัญเด่นที่สุด"], "practice": "สร้างโพสต์ 1 ชิ้นจากโจทย์บริการจริงของคุณ"}, {"concept": "Background Remover และ Magic Eraser ลดเวลาการแต่งภาพ แต่ต้องตรวจขอบภาพและความสมจริง", "steps": ["ลบพื้นหลัง", "ตรวจขอบวัตถุ", "เพิ่ม Shadow/Glow", "วางบนพื้นหลังใหม่", "ตรวจบนมือถือ"], "practice": "ทำภาพสินค้า/บุคคลตัดพื้นหลัง 1 ชิ้น"}, {"concept": "Magic Expand ช่วยขยายภาพให้พอดี Layout โดยเฉพาะ Cover และ Slide", "steps": ["เลือกภาพต้นทาง", "กำหนดขนาดที่ต้องการ", "Expand", "ตรวจส่วนที่ AI เติม", "Crop และใส่ Overlay"], "practice": "แปลงภาพแนวตั้งเป็น Cover 16:9"}, {"concept": "Brand Kit ทำให้ทีมใช้สี ฟอนต์ และโลโก้สม่ำเสมอ", "steps": ["กำหนด Primary/Secondary/Accent", "เลือกฟอนต์หัวเรื่องและเนื้อหา", "อัปโหลดโลโก้", "สร้าง Template หลัก", "บันทึกเป็น Brand Template"], "practice": "สร้าง Mini Brand Kit 1 ชุด"}, {"concept": "Template Hacking คือการใช้ Template เป็นโครง ไม่ใช่คัดลอกทั้งหมด", "steps": ["เลือก Template ที่โครงดี", "ลบองค์ประกอบที่ไม่จำเป็น", "ปรับสีและฟอนต์", "เปลี่ยนภาพให้เข้าบริบท", "เพิ่ม CTA ชัดเจน"], "practice": "เลือก Template 1 อันแล้วทำใหม่ให้เป็นแบรนด์ของคุณ"}, {"concept": "Bulk Create เหมาะกับงานจำนวนมากที่โครงเหมือนกัน เช่น Quote, รายชื่อสินค้า, ตารางกิจกรรม", "steps": ["เตรียมตารางข้อมูล", "สร้าง Template", "เชื่อม Field", "Generate หลายหน้า", "ตรวจตัวอย่างก่อน Export"], "practice": "ทำโพสต์ 10 หน้าโดยใช้ข้อมูลตาราง"}], "prompts": ["ช่วยเขียน Headline 10 แบบ, Subheadline 5 แบบ และ CTA 5 แบบ สำหรับโพสต์ Canva เรื่อง [หัวข้อ] กลุ่มเป้าหมาย [ระบุ] โทนภาษา [ระบุ]", "ช่วยแนะนำ Layout Canva สำหรับโพสต์ [ประเภทงาน] โดยระบุพื้นที่ Headline, ภาพหลัก, Icon, CTA, สี และลำดับสายตา"], "workshop": {"title": "ผลิตชุดโพสต์ 5 หน้าในธีมเดียวกัน", "tasks": ["กำหนดสีและฟอนต์", "เขียนข้อความ 5 หัวข้อ", "เลือก Template หลัก", "สร้างภาพหรือเลือกภาพประกอบ", "ทำ 5 หน้าและตรวจความสม่ำเสมอ"], "deliverable": "โพสต์ 5 หน้า export เป็น PNG หรือ PDF"}, "quiz": [{"q": "Bulk Create เหมาะกับงานแบบใด", "choices": ["งานหนึ่งภาพที่ต้องแต่งแสงละเอียด", "งานหลายหน้าที่โครงเหมือนกันแต่ข้อมูลต่างกัน", "งานตัดต่อเสียง", "งานวาดมือ"], "answer": 1, "why": "Bulk Create ใช้ข้อมูลตารางกับ Template เพื่อสร้างหลายหน้าได้เร็ว"}, {"q": "Brand Kit ช่วยเรื่องใดมากที่สุด", "choices": ["เพิ่มความเร็วเน็ต", "คุมสี ฟอนต์ โลโก้ให้สม่ำเสมอ", "ทำบัญชีรายรับ", "บีบอัดวิดีโอ"], "answer": 1, "why": "Brand Kit คือระบบคุมองค์ประกอบแบรนด์"}]}, {"why": "GPT เป็นสมองช่วยคิดและร่างงาน แต่ผลลัพธ์จะดีหรือไม่ขึ้นกับ Prompt และการสั่งปรับรอบสองรอบสาม", "learningPath": ["เขียน Prompt Framework", "สร้างไอเดีย Content", "เขียน Script", "สร้าง Slide Outline", "ใช้ Refinement Loop"], "keyConcepts": [{"title": "Prompt = คำสั่ง + บริบท + รูปแบบผลลัพธ์", "body": "บอก Role, Goal, Context, Output, Constraints และ Criteria ทุกครั้งเมื่องานสำคัญ"}, {"title": "เริ่มจากโครงก่อนรายละเอียด", "body": "ให้ GPT สร้าง Outline หรือ Framework ก่อน แล้วค่อยขยายเป็นข้อความจริง"}, {"title": "Refinement Loop", "body": "ใช้คำสั่ง วิจารณ์ ปรับให้สั้น เพิ่มตัวอย่าง ทำเป็นตาราง และเปรียบเทียบ เพื่อยกระดับคำตอบ"}], "lessonDetails": [{"concept": "Prompt Framework ช่วยให้ GPT เข้าใจงานและลดคำตอบกว้าง ๆ", "steps": ["กำหนด Role", "บอก Goal", "ให้ Context", "กำหนด Output", "ใส่ Constraints", "บอก Criteria"], "practice": "เขียน Prompt ใหม่จากโจทย์เดิมโดยใช้ Framework"}, {"concept": "Content Idea ต้องผูกกับ Funnel: Awareness, Consideration, Conversion", "steps": ["เลือกกลุ่มเป้าหมาย", "ระบุ Pain Point", "กำหนด Funnel", "สร้างไอเดียหลาย Format", "เลือกจาก Impact/Ease"], "practice": "ทำ Content Calendar 7 วัน"}, {"concept": "Script สั้นควรมี Hook → Problem → Insight → CTA", "steps": ["เขียน Hook 3 วิแรก", "อธิบายปัญหา", "ให้ Insight", "บอกภาพแต่ละ Scene", "จบด้วย CTA เดียว"], "practice": "เขียน Script 30 วินาที 1 เรื่อง"}, {"concept": "Slide Outline ควรมี Message ต่อสไลด์ ไม่ใช่ข้อความยาว", "steps": ["บอกหัวข้อและผู้ฟัง", "กำหนดเวลานำเสนอ", "ขอ Outline", "ใส่ Visual Idea", "เขียน Speaker Note"], "practice": "สร้าง Outline 8 สไลด์"}, {"concept": "GPT + Canva Workflow คือใช้ GPT ทำข้อความและโครง แล้วนำไปจัด Layout ใน Canva", "steps": ["ให้ GPT สร้าง Copy", "ย่อเป็นข้อความบนภาพ", "วางใน Template", "ตรวจความชัด", "ให้ GPT Audit อีกรอบ"], "practice": "สร้างโพสต์จาก Prompt และให้ GPT วิจารณ์"}], "prompts": ["คุณคือ Content Strategist ช่วยสร้าง Content Calendar 7 วันสำหรับ [แบรนด์] กลุ่มเป้าหมาย [ระบุ] โดยมี Hook, Format, Key Visual, CTA และเหตุผล", "ช่วยเขียน Script วิดีโอ 30 วินาทีเรื่อง [หัวข้อ] เป็นตาราง เวลา | คำพูด | ภาพ | ข้อความบนจอ | CTA โดยใช้โครง Hook-Problem-Insight-CTA"], "workshop": {"title": "สร้าง Content Kit 1 แคมเปญ", "tasks": ["เขียน Prompt Brief", "สร้างไอเดีย 10 หัวข้อ", "เลือก 1 หัวข้อทำ Caption", "เขียน Script วิดีโอ", "ทำ Slide Outline 5 หน้า"], "deliverable": "Content Kit 1 ชุดพร้อมนำไปวางใน Canva"}, "quiz": [{"q": "Prompt ที่ดีควรมีอะไร", "choices": ["ถามสั้นที่สุด", "Role Goal Context Output Constraints", "ใช้ภาษาอังกฤษเท่านั้น", "ไม่ต้องบอกกลุ่มเป้าหมาย"], "answer": 1, "why": "องค์ประกอบเหล่านี้ช่วยให้ GPT เข้าใจงานจริง"}, {"q": "ทำไมต้องมี Refinement Loop", "choices": ["เพื่อให้คำตอบยาวขึ้นเสมอ", "เพื่อวิจารณ์ ปรับ และทำให้ผลลัพธ์ใช้จริงได้", "เพื่อเปลี่ยนภาษา", "เพื่อเปิด Canva"], "answer": 1, "why": "ร่างแรกมักยังไม่ดีที่สุด ต้องปรับให้ตรงบริบท"}]}, {"why": "ภาพ AI ที่ดีต้องสื่อสารตรงโจทย์และคุมสไตล์ได้ ไม่ใช่แค่สวยแบบสุ่ม", "learningPath": ["เข้าใจสูตร Prompt ภาพ", "คุมสไตล์ทั้งชุด", "สร้างภาพสำหรับ Social", "ปรับภาพหลัง Generate", "ระวังจริยธรรมและสิทธิ์"], "keyConcepts": [{"title": "Prompt ภาพมีโครงสร้าง", "body": "Subject + Context + Style + Composition + Lighting + Color + Negative Prompt"}, {"title": "Consistency สำคัญกว่าความสวยเดี่ยว ๆ", "body": "ภาพในแคมเปญเดียวกันควรมีสี แสง มุม และ Mood ใกล้กัน"}, {"title": "ภาพสำหรับ Canva ต้องมีพื้นที่ข้อความ", "body": "ระบุ empty space และ no text เพื่อให้เอาไปวาง Headline ใน Canva ได้ง่าย"}], "lessonDetails": [{"concept": "Image Prompt ต้องบอกทั้งสิ่งที่อยากได้และสิ่งที่ไม่อยากได้", "steps": ["ระบุ Subject", "ระบุฉาก", "เลือก Style", "กำหนด Lighting", "กำหนด Composition", "ใส่ no text/no watermark"], "practice": "เขียน Prompt 3 สไตล์จากหัวข้อเดียว"}, {"concept": "Style Consistency ใช้ Style Sheet และคำซ้ำในทุก Prompt", "steps": ["กำหนดสีหลัก", "กำหนดแสง", "กำหนดมุมกล้อง", "กำหนด Mood", "ใช้คำสไตล์ซ้ำ"], "practice": "สร้างภาพ 5 ภาพในธีมเดียว"}, {"concept": "ภาพ Social ต้องอ่านเร็วและเหลือพื้นที่ให้ข้อความ", "steps": ["เลือกจุดสนใจเดียว", "ใส่ empty space", "หลีกเลี่ยงรายละเอียดรก", "นำเข้า Canva", "ใส่ Gradient Overlay"], "practice": "ทำ Cover 3 แบบที่มีพื้นที่วาง Headline"}, {"concept": "Post-processing ทำให้ภาพ AI ใช้งานจริงได้", "steps": ["เลือกภาพที่ตรง Message", "Crop ตามขนาด", "ปรับ Contrast", "ลบสิ่งผิดปกติ", "ตรวจบนมือถือ"], "practice": "แปลงภาพเดียวเป็น Post, Story, Slide"}, {"concept": "ต้องระวังบุคคลจริง แบรนด์จริง งานศิลปิน และข้อมูลอ่อนไหว", "steps": ["หลีกเลี่ยงการเลียนแบบบุคคลจริง", "ไม่ใช้โลโก้คนอื่น", "ตรวจเงื่อนไขเครื่องมือ", "ไม่สร้างภาพชวนเข้าใจผิด", "เปิดเผยเมื่อจำเป็น"], "practice": "Audit ภาพ AI 3 ภาพว่ามีความเสี่ยงใดบ้าง"}], "prompts": ["[Subject] in [Context], [Style], [Mood], [Lighting], [Composition], [Color palette], clean background, empty space for headline, high detail, no text, no watermark", "ช่วยสร้าง Style Sheet สำหรับภาพ AI แคมเปญ [หัวข้อ] โดยระบุ สีหลัก, Mood, Lighting, Composition, Prompt คงที่ และ Negative Prompt"], "workshop": {"title": "สร้างภาพ AI 5 ภาพให้คุมธีมเดียวกัน", "tasks": ["สร้าง Style Sheet", "เขียน Prompt 5 ภาพ", "Generate และคัดเลือก", "นำเข้า Canva", "ทำเป็นโพสต์ชุดเดียวกัน"], "deliverable": "ภาพ 5 ภาพ + Prompt + Style Sheet"}, "quiz": [{"q": "ทำไมควรใส่ no text ใน Prompt ภาพ", "choices": ["ให้ภาพสีเข้ม", "เลี่ยงตัวอักษรเพี้ยนจาก AI", "ลดขนาดไฟล์", "เพิ่มความเร็ว Canva"], "answer": 1, "why": "AI มักสร้างตัวอักษรผิด จึงควรใส่ข้อความใน Canva เอง"}, {"q": "วิธีคุมภาพ AI ให้เป็นชุดคืออะไร", "choices": ["เปลี่ยน Style ทุกภาพ", "ใช้ Style Sheet และคำสไตล์ซ้ำ", "ไม่กำหนดสี", "ใช้ภาพคนละมุมทั้งหมด"], "answer": 1, "why": "Style Sheet ล็อก Mood สี แสง และองค์ประกอบ"}]}, {"why": "Brand Kit ทำให้งานออกแบบทุกชิ้นดูเป็นระบบ น่าเชื่อถือ และประหยัดเวลาในการผลิตงานซ้ำ", "learningPath": ["วาง Brand Strategy", "แตก Logo Concept", "เลือก Color Palette", "จับคู่ Typography", "สร้าง Template System"], "keyConcepts": [{"title": "Brand ไม่ใช่โลโก้เท่านั้น", "body": "แบรนด์คือความรู้สึกและความคาดหวังที่คนมีต่อเรา สี ฟอนต์ ภาพ และภาษาเป็นเพียงเครื่องมือสื่อสาร"}, {"title": "สีและฟอนต์ต้องมีเหตุผล", "body": "เลือกจากกลุ่มเป้าหมาย บุคลิกแบรนด์ และบริบทการใช้งาน ไม่ใช่จากความชอบส่วนตัวอย่างเดียว"}, {"title": "Template System คือเครื่องยนต์ผลิตงาน", "body": "เมื่อมี Template หลัก 4-6 แบบ คุณจะผลิตคอนเทนต์ได้เร็วและสม่ำเสมอ"}], "lessonDetails": [{"concept": "Brand Strategy ตอบว่าแบรนด์ช่วยใคร แตกต่างอย่างไร และอยากให้คนรู้สึกอะไร", "steps": ["กำหนด Audience", "ระบุ Pain/Desire", "เขียน Promise", "เลือก Personality", "กำหนด Tone"], "practice": "ทำ Brand Canvas 1 หน้า"}, {"concept": "Logo Concept ควรเรียบง่าย จำง่าย และใช้ได้หลายขนาด", "steps": ["สร้างไอเดีย 10 แบบ", "คัด 3 แบบ", "ทำใน Canva", "ทดสอบพื้นหลังขาว/ดำ", "ย่อดูขนาดเล็ก"], "practice": "สร้างโลโก้ 3 แนว"}, {"concept": "Color Palette ควรมี Primary, Secondary, Accent, Neutral", "steps": ["เลือกสีหลัก", "เลือกสีรอง", "เลือก Accent สำหรับ CTA", "เลือก Neutral", "ทดสอบ Contrast"], "practice": "ทำ Palette 5 สีพร้อมเหตุผล"}, {"concept": "Typography Pairing ต้องอ่านง่ายและบอกบุคลิกแบรนด์", "steps": ["เลือกฟอนต์หัวเรื่อง", "เลือกฟอนต์เนื้อหา", "กำหนดขนาด 3 ระดับ", "ใช้ไม่เกิน 2-3 ฟอนต์", "ทดสอบบนมือถือ"], "practice": "ทดลอง Font Pairing 2 ชุด"}, {"concept": "Brand Kit ใน Canva ควรรวมโลโก้ สี ฟอนต์ ภาพ และ Template", "steps": ["อัปโหลดโลโก้", "ใส่สี", "ใส่ฟอนต์", "สร้าง Template", "เขียนกติกาการใช้"], "practice": "ทำ Mini Brand Guideline 1 หน้า"}], "prompts": ["ช่วยสร้าง Brand Strategy สำหรับ [แบรนด์] โดยระบุ Positioning, Promise, Personality 5 คำ, Tone of Voice, สีที่เหมาะ และไอเดียโลโก้ 10 แบบ", "ช่วยสร้างคู่มือ Brand Voice สำหรับ [แบรนด์] เป็นตาราง สถานการณ์ | ควรพูดแบบไหน | ไม่ควรพูดแบบไหน | ตัวอย่างข้อความ"], "workshop": {"title": "สร้าง Mini Brand Kit", "tasks": ["เขียน Brand Promise", "เลือกสี 5 สี", "เลือกฟอนต์ 2 แบบ", "ทำ Logo Concept 3 แบบ", "สร้าง Template 4 แบบ"], "deliverable": "Mini Brand Kit + Template Set"}, "quiz": [{"q": "Brand Kit ควรเริ่มจากอะไร", "choices": ["เลือกภาพสวย", "กลยุทธ์และกลุ่มเป้าหมาย", "ใส่ Animation", "เลือกเพลง"], "answer": 1, "why": "กลยุทธ์เป็นตัวกำหนดสี ฟอนต์ ภาษา และภาพ"}, {"q": "Accent Color ใช้เพื่ออะไร", "choices": ["จุดเน้นและ CTA", "ซ่อนข้อความ", "ใช้เป็นพื้นหลังทุกหน้า", "แทนโลโก้"], "answer": 0, "why": "Accent Color ช่วยดึงสายตาไปยังสิ่งสำคัญ"}]}, {"why": "วิดีโอที่ดีต้องมีจังหวะและโครงเรื่อง ไม่ใช่แค่นำภาพนิ่งมาใส่ Animation เยอะ ๆ", "learningPath": ["วางโครงวิดีโอสั้น", "ใช้ Canva Animate", "เขียน AI Video Prompt", "ทำ Opener", "Export หลายแพลตฟอร์ม"], "keyConcepts": [{"title": "Hook 3 วินาทีแรก", "body": "คนตัดสินใจดูต่อเร็วมาก จึงต้องเปิดด้วยปัญหา ผลลัพธ์ หรือคำถามที่แรงพอ"}, {"title": "Animation ต้องนำสายตา", "body": "ใช้การเคลื่อนไหวเพื่อบอกลำดับความสำคัญ ไม่ใช่เพื่อความหวือหวาอย่างเดียว"}, {"title": "Subtitle สำคัญ", "body": "ผู้ชมจำนวนมากดูวิดีโอแบบปิดเสียง ข้อความบนจอต้องช่วยให้เข้าใจได้ทันที"}], "lessonDetails": [{"concept": "Short Video ใช้สูตร Hook → Value → Proof → CTA", "steps": ["เขียน Hook", "ให้ Value 1-3 ข้อ", "ใส่ Proof", "สรุป Action", "จบด้วย CTA"], "practice": "เขียน Storyboard 6 Scene"}, {"concept": "Canva Animate ควรใช้เท่าที่จำเป็นและคุมจังหวะ", "steps": ["ให้ Headline เข้าก่อน", "ใช้ Effect ไม่เกิน 1-2 แบบ", "ตั้ง Timing", "Preview", "ปรับให้อ่านทัน"], "practice": "ทำโพสต์นิ่งให้เป็นวิดีโอ 10 วินาที"}, {"concept": "AI Video Prompt ควรกำหนดฉาก กล้อง แสง และ Motion", "steps": ["เขียน Scene", "กำหนด Camera Movement", "กำหนด Mood", "ใส่ no text", "นำมาใช้เป็น B-roll"], "practice": "สร้าง Prompt AI Video 3 ฉาก"}, {"concept": "Opener คือการสร้างความคาดหวังก่อนเข้าเนื้อหา", "steps": ["เปิดด้วยภาพแรง", "ใส่คำสั้น", "ใส่ Logo/Title", "ใช้เสียงหรือ Cut", "เข้าสู่เนื้อหาเร็ว"], "practice": "ทำ Opener 5 วินาที"}, {"concept": "Export ต้องตรงแพลตฟอร์ม เช่น 9:16, 1:1, 16:9", "steps": ["เลือก Ratio", "เช็ก Safe Area", "ใส่ Subtitle", "Export MP4", "ทดสอบบนมือถือ"], "practice": "ทำวิดีโอเดียว 3 ขนาด"}], "prompts": ["ช่วยเขียน Storyboard วิดีโอ [15/30/60] วินาทีเรื่อง [หัวข้อ] เป็นตาราง Scene | เวลา | ภาพ | ข้อความบนจอ | Voice over | Transition | CTA", "A short cinematic video scene of [subject] in [environment], [mood], [lighting], camera movement: [slow push-in], smooth motion, no text, no watermark"], "workshop": {"title": "ทำวิดีโอสั้น 30 วินาที", "tasks": ["เขียน Storyboard", "สร้างภาพหรือ B-roll", "วางใน Canva", "ใส่ Animation และ Subtitle", "Export 9:16"], "deliverable": "วิดีโอสั้น 30 วินาที + Storyboard"}, "quiz": [{"q": "โครงวิดีโอสั้นที่ดีคืออะไร", "choices": ["Hook Value Proof CTA", "Logo เพลง สี จบ", "ข้อความยาวเต็มจอ", "ภาพสุ่มหลายฉาก"], "answer": 0, "why": "โครงนี้ช่วยดึงคนดู ให้คุณค่า สร้างความเชื่อ และชวนลงมือ"}, {"q": "ทำไมควรใส่ Subtitle", "choices": ["เพราะคนดูหลายคนปิดเสียง", "เพื่อให้ไฟล์ใหญ่", "เพื่อแทนภาพทั้งหมด", "เพื่อทำให้ Export เร็ว"], "answer": 0, "why": "Subtitle ทำให้เข้าใจแม้ไม่เปิดเสียง"}]}, {"why": "Thumbnail เป็นจุดตัดสินใจแรก คนจะคลิกหรือไม่ก่อนเห็นเนื้อหา จึงต้องชัด สะดุดตา และไม่หลอกลวง", "learningPath": ["เข้าใจ Psychology", "ออกแบบ Hierarchy", "ใช้ Typography", "สร้าง Curiosity", "ทำ A/B Test"], "keyConcepts": [{"title": "Promise + Curiosity + Clarity", "body": "Thumbnail ต้องบอกประโยชน์ กระตุ้นความสงสัย และอ่านเข้าใจเร็ว"}, {"title": "คำบนภาพต้องน้อย", "body": "ใช้ 3-6 คำเท่านั้น เพราะผู้ชมเห็นภาพขนาดเล็กและใช้เวลาตัดสินใจสั้น"}, {"title": "ทดสอบ ไม่เดา", "body": "ทำหลายเวอร์ชันและวัดผล CTR หรือ Engagement เพื่อเรียนรู้จากข้อมูลจริง"}], "lessonDetails": [{"concept": "Thumbnail คือคำสัญญาก่อนคลิก", "steps": ["เขียน Promise", "สร้าง Curiosity", "เลือกภาพหลัก", "ใส่คำสั้น", "ตรวจความจริงใจ"], "practice": "วิเคราะห์ Thumbnail 5 ชิ้นที่คุณเคยคลิก"}, {"concept": "Contrast และ Hierarchy ทำให้เห็นในหน้าฟีด", "steps": ["เลือกจุดเด่นเดียว", "ใช้สีตัดกัน", "เพิ่ม Stroke/Shadow", "ลดรายละเอียด", "ย่อดูบนมือถือ"], "practice": "ทำเวอร์ชัน Contrast สูง 1 ภาพ"}, {"concept": "Typography ต้องใหญ่ หนา และอ่านเร็ว", "steps": ["เลือกคำหลัก", "ใช้ฟอนต์หนา", "เน้นคำสำคัญ", "ไม่ชิดขอบ", "หลีกเลี่ยงประโยคยาว"], "practice": "ย่อ Headline ยาวให้เหลือ 5 คำ"}, {"concept": "Face Emotion ช่วยดึงสายตาแต่ต้องตรงเนื้อหา", "steps": ["เลือกอารมณ์", "วางใบหน้าให้ชี้นำสายตา", "ใช้คำถาม", "ไม่หลอกลวง", "ตรวจความสอดคล้อง"], "practice": "ทำ 3 เวอร์ชันด้วย Emotion ต่างกัน"}, {"concept": "A/B Testing ต้องเปลี่ยนทีละปัจจัย", "steps": ["สร้าง 2-3 เวอร์ชัน", "กำหนดสมมติฐาน", "วัด CTR", "วิเคราะห์ผล", "ทำ Template รอบถัดไป"], "practice": "ออกแบบแผน A/B Test 1 ชุด"}], "prompts": ["ช่วยคิด Thumbnail 10 แบบสำหรับวิดีโอ [หัวข้อ] โดยระบุ คำบนภาพไม่เกิน 5 คำ, ภาพหลัก, สี, Curiosity Gap และเหตุผล", "ช่วย Audit Thumbnail นี้ โดยให้คะแนน Clarity, Curiosity, Contrast, Readability, Honesty และข้อเสนอปรับปรุง 5 ข้อ"], "workshop": {"title": "ทำ Thumbnail 3 เวอร์ชัน", "tasks": ["เขียน Promise", "คิดคำบนภาพ 5 แบบ", "ทำ 3 เวอร์ชัน", "ย่อดูบนมือถือ", "เขียนสมมติฐาน A/B Test"], "deliverable": "Thumbnail 3 ภาพ + ตารางเปรียบเทียบ"}, "quiz": [{"q": "Thumbnail ที่ดีควรเป็นอย่างไร", "choices": ["ข้อความยาวครบทุกอย่าง", "Promise ชัดและอ่านเร็ว", "สีใกล้พื้นหลัง", "องค์ประกอบเยอะที่สุด"], "answer": 1, "why": "ผู้ชมมีเวลาตัดสินใจสั้น จึงต้องชัดและอ่านเร็ว"}, {"q": "A/B Test ควรทำอย่างไร", "choices": ["เปลี่ยนทุกอย่างพร้อมกัน", "เปลี่ยนทีละปัจจัย", "ใช้ภาพเดิมเสมอ", "ดูจากความชอบส่วนตัวเท่านั้น"], "answer": 1, "why": "การเปลี่ยนทีละปัจจัยช่วยรู้ว่าอะไรมีผลต่อการคลิก"}]}, {"why": "สไลด์ที่ดีช่วยให้ผู้ฟังเข้าใจและตัดสินใจได้ ไม่ใช่แค่ใส่ข้อมูลครบทุกอย่างในหน้าเดียว", "learningPath": ["One Message Per Slide", "Visual Hierarchy", "Data Visualization", "Storytelling", "Final Pitch Deck"], "keyConcepts": [{"title": "หนึ่งสไลด์ หนึ่งประเด็น", "body": "ถ้ามีหลายประเด็นในหน้าเดียว ผู้ฟังจะไม่รู้ว่าควรจำอะไร"}, {"title": "หัวสไลด์ควรเป็น Insight", "body": "ใช้หัวสไลด์เป็นประโยคสรุป ไม่ใช่หัวข้อกว้าง ๆ เช่น เปลี่ยนจาก ‘ยอดขาย’ เป็น ‘ยอดขายโต 35% จากลูกค้ากลุ่มเดิม’"}, {"title": "กราฟต้องเล่า Insight", "body": "อย่าใส่ข้อมูลทั้งหมด ให้ Highlight จุดที่ต้องการให้เห็น"}], "lessonDetails": [{"concept": "One Message Per Slide ลด Cognitive Load", "steps": ["เขียน Message 1 ประโยค", "ตัดข้อมูลไม่เกี่ยว", "เลือกภาพสนับสนุน", "แยกประเด็นเพิ่มหน้า", "ตรวจว่าจำอะไรได้"], "practice": "แยกสไลด์ข้อความแน่น 1 หน้าเป็น 3 หน้า"}, {"concept": "Hierarchy กำหนดสายตาด้วยขนาด สี ตำแหน่ง และช่องว่าง", "steps": ["ทำจุดสำคัญใหญ่สุด", "ใช้สีเน้นน้อย", "จัด Align", "เพิ่ม White Space", "ตรวจ Flow การอ่าน"], "practice": "ทำ Before/After 1 สไลด์"}, {"concept": "Data Visualization เริ่มจาก Insight ไม่ใช่กราฟ", "steps": ["ถามว่าอยากให้เห็นอะไร", "เลือกชนิดกราฟ", "ลดสิ่งรบกวน", "Highlight จุดสำคัญ", "เขียน Insight Headline"], "practice": "แปลงตารางเป็นกราฟพร้อม Insight"}, {"concept": "Storytelling ทำให้ข้อมูลมีเหตุผลและมีแรงจูงใจ", "steps": ["เปิดด้วยปัญหา", "แสดงผลกระทบ", "เสนอทางออก", "ให้หลักฐาน", "จบด้วย Action"], "practice": "วางโครง 8 สไลด์ Problem-Solution-Proof-Action"}, {"concept": "Pitch Deck รวม Message, Visual, Data และ CTA", "steps": ["กำหนดเป้าหมาย", "ทำ Outline", "สร้าง Template", "ใส่กราฟและภาพ", "ซ้อมพูดไม่อ่านสไลด์"], "practice": "ทำ Pitch Deck 8 หน้า"}], "prompts": ["ช่วยสร้าง Slide Outline หัวข้อ [ระบุ] สำหรับผู้ฟัง [ระบุ] เวลา [ระบุ] เป็นตาราง หน้า | Message | Visual Idea | Data | Speaker Note | CTA", "ช่วย Audit สไลด์นี้ตามหลัก Clarity, One Message, Hierarchy, Story Flow, Actionability พร้อมข้อเสนอปรับปรุง 10 ข้อ"], "workshop": {"title": "สร้าง Mini Pitch Deck 8 หน้า", "tasks": ["เขียนเป้าหมายการนำเสนอ", "สร้าง Outline 8 หน้า", "เขียน Message ทุกหน้า", "ทำสไลด์ใน Canva", "ซ้อมพูด 3 นาที"], "deliverable": "Pitch Deck 8 หน้า + Speaker Note"}, "quiz": [{"q": "One Message Per Slide หมายถึงอะไร", "choices": ["หนึ่งสไลด์มีหนึ่งประเด็นหลัก", "หนึ่งสไลด์มีหนึ่งสีเท่านั้น", "หนึ่งสไลด์ต้องไม่มีภาพ", "หนึ่งสไลด์ต้องไม่มีข้อความ"], "answer": 0, "why": "ประเด็นเดียวทำให้ผู้ฟังเข้าใจและจำได้ง่าย"}, {"q": "กราฟในสไลด์ควรเริ่มจากอะไร", "choices": ["เลือกสี", "หา Insight ที่ต้องการสื่อ", "ใส่ตัวเลขทั้งหมด", "ใช้กราฟวงกลมทุกครั้ง"], "answer": 1, "why": "Insight เป็นตัวกำหนดชนิดกราฟและจุดที่ต้อง Highlight"}]}];
+const completed = new Set();
+
+function renderAll(){
+  // Module grid
+  const grid = document.getElementById('module-grid');
+  grid.innerHTML = MODULES.map(m=>`
+    <div class="module-card${completed.has(m.id)?' done':''}" onclick="openModule(${m.id})" style="padding:0;">
+      <div style="height:3px;background:linear-gradient(90deg,${m.color},${m.color}66);"></div>
+      <div style="padding:18px 20px;">
+        <div style="display:flex;align-items:start;gap:13px;">
+          <div style="background:${m.bg};border-radius:12px;padding:10px;font-size:1.35rem;flex-shrink:0;">${m.emoji}</div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap;">
+              <span style="font-weight:700;font-size:0.92rem;color:#1F2937;">${m.title}</span>
+              ${completed.has(m.id)?'<span class="badge-done">✓ เรียนแล้ว</span>':''}
+            </div>
+            <p style="color:#6B7280;font-size:0.78rem;margin:0 0 10px;line-height:1.5;">${m.subtitle}</p>
+            <div style="display:flex;gap:14px;font-size:0.72rem;color:#9CA3AF;">
+              <span>⏱ ${m.duration}</span>
+              <span>📖 ${m.count} บทเรียน</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:13px;padding-top:12px;border-top:1px solid #F9FAFB;display:flex;flex-wrap:wrap;gap:6px;">
+          ${m.lessons.slice(0,3).map(l=>`<span style="background:${m.bg};color:${m.color};border-radius:6px;padding:3px 8px;font-size:0.68rem;font-weight:600;">${l.length>22?l.slice(0,22)+'..':l}</span>`).join('')}
+          ${m.lessons.length>3?`<span style="background:#F3F4F6;color:#9CA3AF;border-radius:6px;padding:3px 8px;font-size:0.68rem;">+${m.lessons.length-3}</span>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Tools grid
+  const tg = document.getElementById('tools-grid');
+  tg.innerHTML = TOOLS.map(t=>`
+    <div class="tool-card">
+      <div style="background:${t.bg};border-radius:12px;padding:11px;font-size:1.4rem;flex-shrink:0;">${t.emoji}</div>
+      <div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px;">
+          <span style="font-weight:700;color:#1F2937;font-size:0.9rem;">${t.name}</span>
+          <span style="background:${t.tag==='หลัก'?'#FEF3C7':'#F3F4F6'};color:${t.tag==='หลัก'?'#D97706':'#9CA3AF'};border-radius:999px;padding:2px 8px;font-size:0.62rem;font-weight:700;">${t.tag}</span>
+        </div>
+        <p style="color:#6B7280;font-size:0.8rem;margin:0;">${t.desc}</p>
+      </div>
+    </div>`).join('');
+
+  // Outcomes
+  const og = document.getElementById('outcomes-grid');
+  og.innerHTML = OUTCOMES.map(o=>`
+    <div class="outcome-item">
+      <div style="background:#FFF7ED;border-radius:10px;padding:10px;font-size:1.2rem;flex-shrink:0;">${o.emoji}</div>
+      <p style="font-size:0.88rem;font-weight:600;color:#1F2937;line-height:1.5;margin:0;">${o.text}</p>
+    </div>`).join('');
+}
+
+function updateProgress(){
+  const pct = Math.round(completed.size/8*100);
+  document.getElementById('sidebar-progress').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = completed.size+' / 8 Module';
+}
+
+function switchTab(tab){
+  ['modules','tools','outcomes'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display='none';
+    const b=document.getElementById('tb-'+t);
+    b.classList.remove('active');
+  });
+  document.getElementById('tab-'+tab).style.display='block';
+  document.getElementById('tb-'+tab).classList.add('active');
+}
+
+function goHome(){
+  document.getElementById('sec-home').style.display='block';
+  document.getElementById('sec-home').classList.add('fade-in');
+  document.getElementById('sec-module').style.display='none';
+  document.getElementById('breadcrumb').textContent='ภาพรวมคอร์ส';
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  document.getElementById('nav-home').classList.add('active');
+  renderAll();
+}
+
+function openModule(id){
+  const m = MODULES[id];
+  document.getElementById('sec-home').style.display='none';
+  const sec = document.getElementById('sec-module');
+  sec.style.display='block';
+  sec.classList.add('fade-in');
+  document.getElementById('breadcrumb').textContent=m.title;
+  document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active'));
+  const nav=document.getElementById('nav-m'+id);
+  if(nav) nav.classList.add('active');
+  renderModuleDetail(m);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+
+function renderModuleDetail(m){
+  const done = completed.has(m.id);
+  const d = DETAILS[m.id] || {};
+  document.getElementById('module-detail').innerHTML = `
+    <div class="fade-in">
+      <div class="hero-bg" style="border-radius:20px;padding:36px 40px;margin-bottom:28px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(249,115,22,.08);"></div>
+        <div style="display:flex;align-items:center;gap:20px;position:relative;z-index:2;">
+          <div style="background:${m.bg};border-radius:16px;padding:16px;font-size:2rem;flex-shrink:0;">${m.emoji}</div>
+          <div>
+            <div style="color:#64748B;font-size:0.78rem;margin-bottom:5px;">Module ${m.id} of 7 • ${m.duration} • ${m.count} บทเรียน</div>
+            <h1 class="prompt" style="font-size:1.7rem;font-weight:800;color:white;margin:0 0 5px;">${m.title}</h1>
+            <p style="color:#94A3B8;font-size:0.92rem;margin:0 0 12px;">${m.subtitle}</p>
+            <p style="color:#FDBA74;font-size:0.88rem;line-height:1.7;margin:0;max-width:760px;"><b>เป้าหมายการเรียนรู้:</b> ${d.why || ''}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="learning-grid">
+        <div class="learning-box">
+          <h3>🧭 Learning Path</h3>
+          <ol style="padding-left:18px;margin:0;">
+            ${(d.learningPath||[]).map(x=>`<li>${x}</li>`).join('')}
+          </ol>
+        </div>
+        <div class="learning-box">
+          <h3>🎯 Outcomes ของ Module นี้</h3>
+          <ul style="padding-left:18px;margin:0;">
+            ${m.outcomes.map(x=>`<li>${x}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <div style="font-size:1.05rem;font-weight:800;color:#1F2937;margin:4px 0 14px;">🧠 แนวคิดสำคัญที่ต้องเข้าใจ</div>
+      <div class="learning-grid">
+        ${(d.keyConcepts||[]).map(k=>`
+          <div class="learning-box">
+            <h3>${k.title}</h3>
+            <p>${k.body}</p>
+          </div>`).join('')}
+      </div>
+
+      <div style="font-size:1.05rem;font-weight:800;color:#1F2937;margin:22px 0 14px;">📚 บทเรียนแบบลงรายละเอียด</div>
+      ${(m.lessons||[]).map((l,i)=>{
+        const ld = (d.lessonDetails||[])[i] || {concept:'เข้าใจหลักคิดของหัวข้อนี้ แล้วนำไปใช้กับงานจริง',steps:['อ่านโจทย์','ทดลองทำ','ตรวจคุณภาพ'],practice:'ทำตัวอย่าง 1 ชิ้นจากงานจริง'};
+        return `<div class="deep-card">
+          <div class="deep-head"><span style="background:${m.bg};color:${m.color};border-radius:8px;padding:5px 9px;margin-right:8px;">${i+1}</span>${l}</div>
+          <div class="deep-body">
+            <div><span class="label-pill" style="background:${m.bg};color:${m.color};">Concept</span><p>${ld.concept}</p></div>
+            <div><span class="label-pill" style="background:#DBEAFE;color:#1D4ED8;">ทำตามขั้นตอน</span><ol style="padding-left:18px;margin:0;">${ld.steps.map(s=>`<li>${s}</li>`).join('')}</ol></div>
+            <div><span class="label-pill" style="background:#D1FAE5;color:#065F46;">ลงมือฝึก</span><p>${ld.practice}</p></div>
+          </div>
+        </div>`;
+      }).join('')}
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px;">
+        <div class="learning-box">
+          <h3>📝 Prompt Templates พร้อมใช้</h3>
+          ${(d.prompts||[]).map((p,i)=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 6px;"><b style="font-size:.85rem;color:#374151;">Prompt ${i+1}</b><button class="copy-mini" onclick="copyDetailPrompt(${m.id},${i})">คัดลอก</button></div>
+            <pre id="detail-prompt-${m.id}-${i}" class="prompt-box">${p}</pre>
+          `).join('')}
+        </div>
+        <div class="learning-box">
+          <h3>🧪 Workshop: ${(d.workshop||{}).title || ''}</h3>
+          <p><b>งานที่ต้องทำ</b></p>
+          <ol style="padding-left:18px;margin:0 0 12px;">
+            ${((d.workshop||{}).tasks||[]).map(t=>`<li>${t}</li>`).join('')}
+          </ol>
+          <p style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:12px;padding:12px;"><b>Deliverable:</b> ${((d.workshop||{}).deliverable||'')}</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;">
+        <div class="learning-box">
+          <h3>✅ Checklist ก่อนจบ Module</h3>
+          ${(m.outcomes||[]).map(o=>`<label style="display:flex;gap:10px;align-items:flex-start;margin:9px 0;font-size:.86rem;color:#374151;"><input type="checkbox" style="margin-top:4px;accent-color:#F97316;"> <span>${o}</span></label>`).join('')}
+        </div>
+        <div class="learning-box">
+          <h3>🧩 Quiz ตรวจความเข้าใจ</h3>
+          ${(d.quiz||[]).map((q,qi)=>`
+            <div style="margin-bottom:14px;">
+              <p style="font-weight:800;color:#374151;margin:0 0 8px;">${qi+1}. ${q.q}</p>
+              ${q.choices.map((c,ci)=>`<label class="quiz-choice"><input type="radio" name="detail-q-${m.id}-${qi}" value="${ci}" style="accent-color:#F97316;margin-right:8px;">${c}</label>`).join('')}
+              <div id="detail-feedback-${m.id}-${qi}" style="display:none;"></div>
+            </div>
+          `).join('')}
+          <button class="btn-orange" onclick="checkDetailQuiz(${m.id})" style="width:100%;padding:10px;font-size:.85rem;">ตรวจคำตอบ</button>
+          <div id="detail-result-${m.id}" style="margin-top:12px;font-weight:800;color:#F97316;"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;display:grid;grid-template-columns:3fr 2fr;gap:22px;">
+        <div class="card" style="padding:20px;">
+          <div style="font-size:1.05rem;font-weight:800;color:#1F2937;margin-bottom:10px;">⚡ วิธีเรียน Module นี้ให้ได้ผล</div>
+          <ol style="padding-left:18px;margin:0;color:#4B5563;font-size:.88rem;line-height:1.8;">
+            <li>อ่าน Concept ทุกบทก่อนลงมือ</li>
+            <li>คัดลอก Prompt ไปแทนข้อมูลจริงของคุณ</li>
+            <li>ทำ Workshop ให้มีผลงานจับต้องได้อย่างน้อย 1 ชิ้น</li>
+            <li>ใช้ Checklist ตรวจงานก่อนส่งหรือเผยแพร่</li>
+            <li>ทำ Quiz และกลับไปอ่านจุดที่ยังตอบผิด</li>
+          </ol>
+        </div>
+        <div>
+          <button onclick="markDone(${m.id})" id="done-btn-${m.id}" class="${done?'':'btn-orange'}"
+            style="width:100%;padding:13px;font-size:0.92rem;font-weight:700;border-radius:12px;cursor:pointer;margin-bottom:10px;font-family:'Sarabun',sans-serif;${done?'background:#D1FAE5;color:#059669;border:2px solid #6EE7B7;':'border:none;'}">
+            ${done?'✅ เรียนเสร็จแล้ว!':'✅ มาร์กว่าเรียนแล้ว'}
+          </button>
+          ${m.id<7?`<button onclick="openModule(${m.id+1})" class="btn-outline" style="width:100%;padding:12px;font-size:0.88rem;">▶ Module ถัดไป →</button>`:`<div style="background:linear-gradient(135deg,#FFF7ED,#FEF3C7);border:1px solid #FDBA74;border-radius:12px;padding:16px;text-align:center;"><div style="font-size:1.5rem;margin-bottom:5px;">🎉</div><div style="font-weight:700;color:#92400E;font-size:0.88rem;">จบคอร์สแล้ว! ยินดีด้วย</div></div>`}
+          <button onclick="goHome()" style="width:100%;background:none;border:none;color:#9CA3AF;font-size:0.8rem;cursor:pointer;padding:10px;margin-top:4px;font-family:'Sarabun',sans-serif;">← กลับหน้าภาพรวม</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function copyDetailPrompt(mid, idx){
+  const el = document.getElementById(`detail-prompt-${mid}-${idx}`);
+  if(!el) return;
+  navigator.clipboard.writeText(el.innerText).then(()=>alert('คัดลอก Prompt แล้ว'));
+}
+
+function checkDetailQuiz(mid){
+  const d = DETAILS[mid];
+  let score = 0;
+  (d.quiz||[]).forEach((q,qi)=>{
+    const picked = document.querySelector(`input[name="detail-q-${mid}-${qi}"]:checked`);
+    const fb = document.getElementById(`detail-feedback-${mid}-${qi}`);
+    const ok = picked && Number(picked.value) === q.answer;
+    if(ok) score++;
+    fb.style.display = 'block';
+    fb.className = 'quiz-feedback';
+    fb.style.background = ok ? '#ECFDF5' : '#FEF2F2';
+    fb.style.border = ok ? '1px solid #A7F3D0' : '1px solid #FECACA';
+    fb.style.color = ok ? '#047857' : '#B91C1C';
+    fb.innerHTML = ok ? `✅ ถูกต้อง — ${q.why}` : `❌ ยังไม่ถูก — คำตอบที่ถูกคือ “${q.choices[q.answer]}” เพราะ ${q.why}`;
+  });
+  const result = document.getElementById(`detail-result-${mid}`);
+  result.textContent = `คะแนน: ${score} / ${(d.quiz||[]).length}`;
+}
+
+function markDone(id){
+  completed.add(id);
+  updateProgress();
+  const btn = document.getElementById('done-btn-'+id);
+  if(btn){
+    btn.className='';
+    btn.style.cssText='width:100%;padding:13px;font-size:0.92rem;font-weight:700;border-radius:12px;cursor:pointer;margin-bottom:10px;font-family:\'Sarabun\',sans-serif;background:#D1FAE5;color:#059669;border:2px solid #6EE7B7;';
+    btn.textContent='✅ เรียนเสร็จแล้ว!';
+  }
+  renderAll();
+}
+
+// Init
+renderAll();
+</script>
+</body>
+</html>
